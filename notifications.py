@@ -15,6 +15,7 @@
 # under the License.
 
 import argparse
+import datetime
 import http.client
 import json
 import os
@@ -24,9 +25,12 @@ import sys
 import urllib
 from itertools import groupby
 
+import dateutil.parser
+
 # TODO(chmou): handle support for github enteprise
 GITHUB_URL = 'https://api.github.com'
 
+TIMESPAN = ("8h30", "18h30")
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
@@ -175,7 +179,7 @@ class Tools():
 
     @staticmethod
     def print_bitbar_line(title, **kwargs):
-        print(title + ' | ' + (' '.join([f'{k}={v}' for k, v in kwargs.items()])))
+        print(f'{title} | ' + (' '.join([f'{k}={v}' for k, v in kwargs.items()])))
 
     @staticmethod
     def execute(command, check_error=""):
@@ -209,6 +213,9 @@ class GithubNotifications():
             self.readrepo(args.others[0])
         elif args.readthread:
             self.readthread(args.others[0])
+        elif (datetime.datetime.now() < dateutil.parser.parse(TIMESPAN[0]) or
+              datetime.datetime.now() > dateutil.parser.parse(TIMESPAN[1])):
+            print("🛌")
         else:
             self.get_notifications()
 
@@ -227,9 +234,10 @@ class GithubNotifications():
 
         if notifications:
             Tools.print_bitbar_line(title='🔵', color=self.color_active)
+            print('---')
         else:
             print('⦿')
-            return
+            sys.exit(0)
 
         Tools.print_bitbar_line(title='Refresh', refresh='true')
 
