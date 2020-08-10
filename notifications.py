@@ -30,9 +30,12 @@ import dateutil.parser
 # TODO(chmou): handle support for github enteprise
 GITHUB_URL = 'https://api.github.com'
 
+# Configure these variables TIMESPAN and DAYSPAN to your liking
 TIMESPAN = ("08h30", "18h30")
 DAYSPAN = ("Mon", "Tue", "Wed", "Thu", "Fri")
 
+# This will use the env variable and if that cannot be found it will try to get
+# the token from the github.oauth-token section in your gitconfig
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
 
