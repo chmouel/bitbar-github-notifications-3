@@ -30,7 +30,8 @@ import dateutil.parser
 # TODO(chmou): handle support for github enteprise
 GITHUB_URL = 'https://api.github.com'
 
-TIMESPAN = ("8h30", "18h30")
+TIMESPAN = ("08h30", "18h30")
+DAYSPAN = ("Mon", "Tue", "Wed", "Thu", "Fri")
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
@@ -213,6 +214,8 @@ class GithubNotifications():
             self.readrepo(args.others[0])
         elif args.readthread:
             self.readthread(args.others[0])
+        elif datetime.datetime.now().strftime("%a") not in DAYSPAN:
+            print("🏖️")
         elif (datetime.datetime.now() < dateutil.parser.parse(TIMESPAN[0]) or
               datetime.datetime.now() > dateutil.parser.parse(TIMESPAN[1])):
             print("🛌")
@@ -230,7 +233,6 @@ class GithubNotifications():
 
     def get_notifications(self):
         notifications = json.load(Tools.github_request(GITHUB_URL + "/notifications"))
-        # notifications = json.load(open("/tmp/notifications.json"))
 
         if notifications:
             Tools.print_bitbar_line(title='🔵', color=self.color_active)
